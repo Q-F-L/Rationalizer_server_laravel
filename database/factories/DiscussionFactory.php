@@ -14,7 +14,7 @@ class DiscussionFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->unique->name()
         ];
     }
 }

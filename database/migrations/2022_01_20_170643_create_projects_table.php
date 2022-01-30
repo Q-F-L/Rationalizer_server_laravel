@@ -25,6 +25,7 @@ class CreateProjectsTable extends Migration
             $table->string('need_photo');
             $table->string('will_description');
             $table->string('rating');
+            $table->string('status');
             $table->unsignedBigInteger('discussion_id');
 
             $table->foreign('discussion_id')->references('id')->on('discussions')->onDelete('cascade');

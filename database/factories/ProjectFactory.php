@@ -23,6 +23,7 @@ class ProjectFactory extends Factory
             'need_video' => $this->faker->image(),
             'need_photo' => $this->faker->image(),
             'will_description' => $this->faker->realText(),
+            'status' => 'consideration',
             'rating' => $this->faker->numberBetween(1, 100) / 10,
             'discussion_id' => $this->faker->unique()->numberBetween(1, 10),
             'user_id' => $this->faker->numberBetween(1, 10),
