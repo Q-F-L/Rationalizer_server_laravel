@@ -53,7 +53,15 @@ Route::get('/', function () {
     {   
         echo '<br>' . '*****************************' . '<br>';
         echo $user->id . '   ';
-       echo count($user->rating);
+        $count = 0;
+        foreach ($user->project as $project) 
+        {
+            if ($project['status'] === 'approved')
+            {
+                $count++;
+            }
+        }
+        echo $count . '<br>';
     }
 });
 

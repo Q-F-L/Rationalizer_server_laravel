@@ -36,6 +36,7 @@ class UserController extends Controller
         $user->name = $req->input('name');
         $user->password = Hash::make($req->input("password"));
         $user->type = 'user';
+        $user->remember_token = '';
         $user->save();
 
         return response()->json([
@@ -50,7 +51,7 @@ class UserController extends Controller
             'email' => 'required|min:4|max:50',
             'password' => 'required|min:6|max:20',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'error' => [
@@ -63,15 +64,22 @@ class UserController extends Controller
 
         $user = User::where("email", $req->email)->first();
 
-        
+
         if (!$user)
             return response()->json("This user does not exist!");
         if (!Hash::check($req->password, $user->password))
             return response()->json("The entered data is incorrect!");
 
         $token = Str::random(60);
-        
         $user->remember_token = $token;
+        $user->save();
+
+        // return request('POST', '/api/user', [
+        //     'headers' => [
+        //         'Authorization' => 'Bearer '.$token,
+        //         'Accept' => 'application/json',
+        //     ],
+        // ]);
 
         return response()->json(
             [
@@ -79,6 +87,30 @@ class UserController extends Controller
                 "token" => $token,
             ]
         );
+    }
+
+    public function search($id)
+    {
+        $user = User::where('remember_token', $_SERVER['HTTP_BEARER'])->first();
+
+        if ($user->id == $id) {
+            $user = User::find($id);
+            $count = 0;
+
+            foreach ($user->project as $project) {
+                if ($project['status'] === 'approved') {
+                    $count++;
+                }
+            }
+
+            return response()->json([
+                'имя' => $user['name'],
+                'оценок' => count($user->rating),
+                'комментариев' => count($user->message),
+                'предложений' => count($user->project),
+                'одобрено' => $count
+            ]);
+        }
     }
 
     // public function logout()
