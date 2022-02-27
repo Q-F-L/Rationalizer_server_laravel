@@ -37,9 +37,9 @@ class MessageController extends Controller
         ]);
     }
 
-    public function delete($user_id, $id)
+    public function delete($user_id, $id, Request $request)
     {
-        $user = DB::table('users')->where('remember_token', $_SERVER['HTTP_BEARER'])->first();
+        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
         if($user->id == $user_id)
         {
             return Message::destroy($id);
@@ -48,7 +48,7 @@ class MessageController extends Controller
 
     public function edit($id, Request $request)
     {
-        $user = DB::table('users')->where('remember_token', $_SERVER['HTTP_BEARER'])->first();
+        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
 
         $validator = Validator::make($request->all(), [
             'message' => 'required|min:1|max:150',

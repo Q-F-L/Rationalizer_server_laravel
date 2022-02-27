@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AuthToken
 {
@@ -16,13 +18,13 @@ class AuthToken
      */
     public function handle(Request $request, Closure $next)
     {
-        print_r($_SERVER['HTTP_BEARER']);
+        // die($request->bearerToken());$_SERVER['HTTP_AUTHORIZATION']
+        $user =  User::where('remember_token', $request->bearerToken())->first();
+        // print_r( $request->bearerToken() == $user->remember_token );exit;
 
-        if(!empty($_SERVER['HTTP_BEARER'])){
-            echo 'auth';
-            return true;
-        }
-
-        return false;
+        if($request->bearerToken() === $user->remember_token)
+            return $next($request);
+        else
+            return route('login');
     }
 }

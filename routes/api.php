@@ -28,15 +28,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [UserController::class, 'register']);
 
 //вход в систему
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'login'])->name('login');
 
 //выход из системы
-// Route::post('/logout', [UserController::class, 'logout']);
 
 
 //возможности доступные только авторизованным пользователям
-if(!empty($_SERVER['HTTP_BEARER']) && null != DB::table('users')->where('remember_token', $_SERVER['HTTP_BEARER'])->first())
-{
+Route::middleware('authtoken')->group(function () {
     //создание проекта и создание обсуждения
     Route::post('/create_project', [ProjectController::class, 'create']);
 
@@ -60,12 +58,7 @@ if(!empty($_SERVER['HTTP_BEARER']) && null != DB::table('users')->where('remembe
 
     //поиск пользователя по id (для личного кабинета)
     Route::get('/search/{id}', [UserController::class, 'search']);
-} else {
-    die(response()->json([
-        'message' => 'You not auth',
-        'route' => 'home'
-    ]));
-}
+});
 
 //повозможности (желательно)
 //возможности админа

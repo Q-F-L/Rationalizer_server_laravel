@@ -89,9 +89,9 @@ class UserController extends Controller
         );
     }
 
-    public function search($id)
+    public function search($id, Request $request)
     {
-        $user = User::where('remember_token', $_SERVER['HTTP_BEARER'])->first();
+        $user = User::where('remember_token', $request->bearerToken())->first();
 
         if ($user->id == $id) {
             $user = User::find($id);
