@@ -40,7 +40,8 @@ class MessageController extends Controller
     public function delete($user_id, $id, Request $request)
     {
         $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
-        if($user->id == $user_id)
+        $message = Message::find($id);
+        if($user->id == $message->user_id)
         {
             return Message::destroy($id);
         }
@@ -49,26 +50,26 @@ class MessageController extends Controller
     public function edit($id, Request $request)
     {
         $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
-
-        $validator = Validator::make($request->all(), [
-            'message' => 'required|min:1|max:150',
-            'discussion_id' => 'required',
-            'user_id' => 'required',
-        ]);
-
-        if ($validator->failed()) {
-            return response()->json([
-                'error' => [
-                    "code" => 422,
-                    "message" => "Validation error",
-                    "errors" => $validator->errors(),
-                ]
-            ], 422);
-        }
-        
-
-        if($user->id == $request->user_id)
+        $message = Message::find($id);
+        if($user->id == $message->user_id)
         {
+            $validator = Validator::make($request->all(), [
+                'message' => 'required|min:1|max:150',
+                'discussion_id' => 'required',
+                'user_id' => 'required',
+            ]);
+
+            if ($validator->failed()) {
+                return response()->json([
+                    'error' => [
+                        "code" => 422,
+                        "message" => "Validation error",
+                        "errors" => $validator->errors(),
+                    ]
+                ], 422);
+            }
+            
+
             $message = Message::find($id);
             $message->message = $request->input('message');
             $message->save();
@@ -76,5 +77,9 @@ class MessageController extends Controller
                 'message' => 'edit you\'r message'
             ]);
         }
+        else
+            return response()->json([
+                'message' => 'You do not have access to the message'
+            ]);
     }
 }

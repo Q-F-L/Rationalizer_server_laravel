@@ -35,6 +35,7 @@ Route::post('/login', [UserController::class, 'login'])->name('login');
 
 //возможности доступные только авторизованным пользователям
 Route::middleware('authtoken')->group(function () {
+
     //создание проекта и создание обсуждения
     Route::post('/create_project', [ProjectController::class, 'create']);
 
@@ -46,6 +47,12 @@ Route::middleware('authtoken')->group(function () {
 
     //поиск проекта по имени
     Route::get("/search_name_project/{title}", [ProjectController::class, 'searchName']);
+
+    //удалить свой проект
+    Route::delete('/delete_project/{id}', [ProjectController::class, 'delete']);
+
+    //изменение проект
+    Route::put('/edit_project/{id}', [ProjectController::class, 'edit']);
 
     //создание сообщения
     Route::post('/create_message', [MessageController::class, 'create']);
