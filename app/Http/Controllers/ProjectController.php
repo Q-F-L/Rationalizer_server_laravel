@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\DiscussionController;
 use App\Models\Discussion;
+use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
@@ -98,14 +99,68 @@ class ProjectController extends Controller
         if($project->user_id == $user->id)
         {
             return Project::destroy($id);
+
+            return response()->json([
+                'code' => '1',
+                'message' => "Delete project {$project->id}"
+            ]);
         }
+
+        return response()->json([
+            'code' => '3',
+            'message' => "Error! У вас не достаточно прав!"
+        ]);
+    }
+
+    public function rating($id, $rating_get, Request $request)
+    {
+        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
+        $project = Project::find($id);
+        if(($rating_get < 11 && $rating_get > 0) && $user->id == $project->user_id)
+        {
+            $rating = new Rating;
+            $rating->user_id = $user->id;
+            $rating->project_id = $id;
+            $rating->rating = $rating_get;
+            $rating->save();
+            return response()->json([
+                'code' => '1',
+                'message' => "Create rating"
+            ]);
+        }
+
+        return response()->json([
+            'code' => '3',
+            'message' => "Error! У вас не достаточно прав!"
+        ]);
+    }
+
+    public function status($id, Request $request)
+    {
+        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
+        $project = Project::find($id);
+
+        if($user->id == $project->user_id)
+        {
+            $project->status = $request->status;
+            
+            return response()->json([
+                'code' => '1',
+                'message' => "Edit status"
+            ]);
+        }
+
+        return response()->json([
+            'code' => '3',
+            'message' => "Error! У вас не достаточно прав!"
+        ]);
     }
 
     public function edit($id, Request $request)
     {
         $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
         $project = Project::find($id);
-        // print_r($project->user_id);exit;
+        
         if($user->id == $project->user_id)
         {
             $validator = Validator::make($request->all(), [

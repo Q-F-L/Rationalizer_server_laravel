@@ -53,6 +53,12 @@ Route::middleware('authtoken')->group(function () {
 
     //изменение проект
     Route::put('/edit_project/{id}', [ProjectController::class, 'edit']);
+    
+    //изменение статуса проекта
+    Route::get('/status/{id}', [ProjectController::class, 'status']);
+
+    //изменение рейтинга проект
+    Route::get('/rating/{id}/{rating_get}', [ProjectController::class, 'rating']);
 
     //создание сообщения
     Route::post('/create_message', [MessageController::class, 'create']);
