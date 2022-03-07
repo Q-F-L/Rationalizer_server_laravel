@@ -98,7 +98,8 @@ class ProjectController extends Controller
         // print_r($project->user_id == $user->id);exit;
         if($project->user_id == $user->id)
         {
-            return Project::destroy($id);
+            Discussion::destroy($project->discussion_id);
+            Project::destroy($id);
 
             return response()->json([
                 'code' => '1',
