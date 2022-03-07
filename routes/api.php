@@ -63,6 +63,9 @@ Route::middleware('authtoken')->group(function () {
     //изменение rating_calc
     Route::get('/rating_calc/{project_id}', [ProjectController::class, 'rating_calc']);
 
+    //изменение rating_calc
+    Route::get('/filter_status/{status}', [ProjectController::class, 'filter_status']);
+
 
 
     //создание сообщения

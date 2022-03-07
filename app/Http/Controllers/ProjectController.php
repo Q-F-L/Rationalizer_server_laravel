@@ -113,6 +113,12 @@ class ProjectController extends Controller
         ]);
     }
 
+    public function filter_status($status)
+    {
+        $project = Project::where('status', $status)->get();
+        return $project;
+    }
+
     public function rating($id, $rating_get, Request $request)
     {
         $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
