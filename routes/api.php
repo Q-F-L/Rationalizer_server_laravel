@@ -60,6 +60,11 @@ Route::middleware('authtoken')->group(function () {
     //изменение рейтинга проект
     Route::get('/rating/{id}/{rating_get}', [ProjectController::class, 'rating']);
 
+    //изменение rating_calc
+    Route::get('/rating_calc/{project_id}', [ProjectController::class, 'rating_calc']);
+
+
+
     //создание сообщения
     Route::post('/create_message', [MessageController::class, 'create']);
 
@@ -68,6 +73,8 @@ Route::middleware('authtoken')->group(function () {
 
     //изменение сообщения
     Route::put('/edit_message/{id}', [MessageController::class, 'edit']);
+
+    
 
     //поиск пользователя по id (для личного кабинета)
     Route::get('/search/{id}', [UserController::class, 'search']);

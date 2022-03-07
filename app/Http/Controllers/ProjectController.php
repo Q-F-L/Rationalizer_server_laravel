@@ -123,6 +123,7 @@ class ProjectController extends Controller
             $rating->project_id = $id;
             $rating->rating = $rating_get;
             $rating->save();
+
             return response()->json([
                 'code' => '1',
                 'message' => "Create rating"
@@ -133,6 +134,19 @@ class ProjectController extends Controller
             'code' => '3',
             'message' => "Error! У вас не достаточно прав!"
         ]);
+    }
+
+    public function rating_calc($project_id)
+    {
+        $rating = Rating::where('project_id', $project_id)->pluck('rating')->toArray();
+        $math = 0;
+
+        foreach ($rating as $key => $value) {
+            $math += $value;
+        }
+
+        $math /= count($rating);
+        return $math;
     }
 
     public function status($id, Request $request)
