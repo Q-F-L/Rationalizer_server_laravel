@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 //регистрация пользователя
 Route::post('/register', [UserController::class, 'register']);
@@ -32,6 +32,7 @@ Route::post('/login', [UserController::class, 'login'])->name('login');
 
 //выход из системы
 
+    Route::get('/all_project', [ProjectController::class, 'index']);
 
 //возможности доступные только авторизованным пользователям
 Route::middleware('authtoken')->group(function () {
@@ -40,7 +41,6 @@ Route::middleware('authtoken')->group(function () {
     Route::post('/create_project', [ProjectController::class, 'create']);
 
     //вывести все проекты
-    Route::get('/all_project', [ProjectController::class, 'index']);
 
     //поиск проекта по id
     Route::get("/search_id_project/{id}", [ProjectController::class, 'search']);
