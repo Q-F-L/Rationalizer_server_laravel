@@ -32,7 +32,7 @@ Route::post('/login', [UserController::class, 'login'])->name('login');
 
 //выход из системы
 
-    Route::get('/all_project', [ProjectController::class, 'index']);
+Route::get('/all_project', [ProjectController::class, 'index']);
 
 //возможности доступные только авторизованным пользователям
 Route::middleware('authtoken')->group(function () {

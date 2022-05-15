@@ -83,7 +83,9 @@ class ProjectController extends Controller
 
     public function index()
     {
-        return Project::all();
+        return response()->json([
+            'project' => Project::all(),
+        ]);
     }
 
     public function searchName($title)
