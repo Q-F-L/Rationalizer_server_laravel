@@ -17,7 +17,7 @@ class ProjectController extends Controller
 {
     public function search($id)
     {
-        return Project::find($id);
+        return  Project::find($id);
     }
 
     public function create(Request $request)
@@ -124,25 +124,41 @@ class ProjectController extends Controller
     public function rating($id, $rating_get, Request $request)
     {
         $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
-        $project = Project::find($id);
-        if(($rating_get < 11 && $rating_get > 0) && $user->id == $project->user_id)
-        {
-            $rating = new Rating;
-            $rating->user_id = $user->id;
-            $rating->project_id = $id;
-            $rating->rating = $rating_get;
-            $rating->save();
+	      $project = Project::find($id);
+	      $rating = DB::table('ratings')->where('project_id', '=', $id)->where('user_id', '=',$user->id)->first();
+	      if ($rating != null) {
+	      	if($rating_get <= 5 && $rating_get > 0)
+	         {
+	         	$rating_calc = $rating->rating - $rating_get; 
+	            DB::table('ratings')->decrement('rating', $rating_calc);
 
-            return response()->json([
-                'code' => '1',
-                'message' => "Create rating"
-            ]);
-        }
+	            return response()->json([
+	                'code' => '1',
+	                'message' => "Update rating in project ".$id,
+	            ]);
+	         }
+	         return $rating_get <= 5 && $rating_get > 0 ? 'Obnovleno no error' : 'true';
+	      } else {
+	      	if(($rating_get <= 5 && $rating_get > 0))
+	        {
+	            $rating = new Rating;
+	            $rating->user_id = $user->id;
+	            $rating->project_id = $id;
+	            $rating->rating = $rating_get;
+	            $rating->save();
 
-        return response()->json([
-            'code' => '3',
-            'message' => "Error! У вас не достаточно прав!"
-        ]);
+	            return response()->json([
+	                'code' => '1',
+	                'message' => "Create rating"
+	            ]);
+	        }
+
+	        return response()->json([
+	            'code' => '3',
+	            'message' => "Error! У вас не достаточно прав!"
+	        ]);
+	      }
+	      return 'Переданны некоректные данные';
     }
 
     public function rating_calc($project_id)

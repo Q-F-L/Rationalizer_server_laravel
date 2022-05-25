@@ -105,11 +105,11 @@ class UserController extends Controller
             }
 
             return response()->json([
-                'имя' => $user['name'],
-                'оценок' => count($user->rating),
-                'комментариев' => count($user->message),
-                'предложений' => count($user->project),
-                'одобрено' => $count
+                'name' => $user['name'],
+                'estimation' => count($user->rating),
+                'comments' => count($user->message),
+                'offers' => count($user->project),
+                'approved' => $count
             ]);
         }
     }
