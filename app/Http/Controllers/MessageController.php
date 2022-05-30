@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Validator;
 
 class MessageController extends Controller
 {
+    public function index($id)
+    {
+        return response()->json([
+            'discussion' => Message::where('discussion_id', $id)->get(),
+        ]);
+    }
+
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [

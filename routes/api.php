@@ -30,10 +30,6 @@ Route::post('/register', [UserController::class, 'register']);
 //вход в систему
 Route::post('/login', [UserController::class, 'login'])->name('login');
 
-//выход из системы
-
-Route::get('/all_project', [ProjectController::class, 'index']);
-
 //возможности доступные только авторизованным пользователям
 Route::middleware('authtoken')->group(function () {
 
@@ -41,6 +37,7 @@ Route::middleware('authtoken')->group(function () {
     Route::post('/create_project', [ProjectController::class, 'create']);
 
     //вывести все проекты
+    Route::get('/all_project', [ProjectController::class, 'index']);
 
     //поиск проекта по id
     Route::get("/search_id_project/{id}", [ProjectController::class, 'search']);
@@ -55,7 +52,7 @@ Route::middleware('authtoken')->group(function () {
     Route::put('/edit_project/{id}', [ProjectController::class, 'edit']);
     
     //изменение статуса проекта
-    Route::get('/status/{id}', [ProjectController::class, 'status']);
+    Route::put('/status/{id}', [ProjectController::class, 'status']);
 
     //изменение рейтинга проект
     Route::get('/rating/{id}/{rating_get}', [ProjectController::class, 'rating']);
@@ -77,16 +74,8 @@ Route::middleware('authtoken')->group(function () {
     //изменение сообщения
     Route::put('/edit_message/{id}', [MessageController::class, 'edit']);
 
-    
+    Route::get('/get_discussion/{id}', [MessageController::class, 'index']);    
 
     //поиск пользователя по id (для личного кабинета)
     Route::get('/search/{id}', [UserController::class, 'search']);
 });
-
-//повозможности (желательно)
-//возможности админа
-
-    //удаление обсуждения
-
-    //удаление пользователя
-

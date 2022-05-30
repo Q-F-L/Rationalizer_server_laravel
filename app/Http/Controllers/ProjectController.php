@@ -70,7 +70,7 @@ class ProjectController extends Controller
         $project->rating = 0;
         $project->status = 'consideration';
         $project->discussion_id = craete_discussion($request->input('title')); //автоматиеческое создание дискусий
-        $project->user_id = $user->id;
+        $project->user_id = $request->input('user_id');
         $project->save();
 
         return response()->json([
@@ -95,23 +95,13 @@ class ProjectController extends Controller
 
     public function delete($id, Request $request)
     {
-        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
         $project = Project::find($id);
-        // print_r($project->user_id == $user->id);exit;
-        if($project->user_id == $user->id)
-        {
-            Discussion::destroy($project->discussion_id);
-            Project::destroy($id);
-
-            return response()->json([
-                'code' => '1',
-                'message' => "Delete project {$project->id}"
-            ]);
-        }
+        Discussion::destroy($project->discussion_id);
+        Project::destroy($id);
 
         return response()->json([
-            'code' => '3',
-            'message' => "Error! У вас не достаточно прав!"
+            'code' => '1',
+            'message' => "Delete project {$project->id}"
         ]);
     }
 
@@ -170,28 +160,21 @@ class ProjectController extends Controller
             $math += $value;
         }
 
-        $math /= count($rating);
-        return $math;
+        $math = round($math / count($rating), 1);
+        $project = Project::where('id', $project_id)->first();
+        $project->rating = $math;
+        $project->save();
+        return $project;
     }
 
     public function status($id, Request $request)
     {
-        $user = DB::table('users')->where('remember_token', $request->bearerToken())->first();
         $project = Project::find($id);
-
-        if($user->id == $project->user_id)
-        {
-            $project->status = $request->status;
-            
-            return response()->json([
-                'code' => '1',
-                'message' => "Edit status"
-            ]);
-        }
-
+        $project->status = $request->status;
+        $project->save();
         return response()->json([
-            'code' => '3',
-            'message' => "Error! У вас не достаточно прав!"
+            'code' => '1',
+            'message' => "Edit status"
         ]);
     }
 

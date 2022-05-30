@@ -74,18 +74,12 @@ class UserController extends Controller
         $user->remember_token = $token;
         $user->save();
 
-        // return request('POST', '/api/user', [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer '.$token,
-        //         'Accept' => 'application/json',
-        //     ],
-        // ]);
-
         return response()->json(
             [
                 "message" => 'login',
                 "user_id" => $user->id,
                 "token" => $token,
+                'type' => $user->type,
             ]
         );
     }
@@ -113,13 +107,4 @@ class UserController extends Controller
             ]);
         }
     }
-
-    // public function logout()
-    // {
-    //     return response()->json(
-    //         [
-    //             "message" => 'logout'
-    //         ]
-    //     );
-    // }
 }
