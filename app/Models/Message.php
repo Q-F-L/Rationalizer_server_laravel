@@ -16,4 +16,9 @@ class Message extends Model
         return $user;
     } 
 
+    public function userg()
+    {
+        return $this->hasMany(User::class);
+    } 
+
 }

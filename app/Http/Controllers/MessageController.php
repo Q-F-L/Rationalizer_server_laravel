@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -11,8 +12,14 @@ class MessageController extends Controller
 {
     public function index($id)
     {
+        $arr_message = Message::where('discussion_id', $id)->get();
+
+        foreach ($arr_message as $item) {
+            $item->user_name = User::find($item->user_id)->name;
+        }
+
         return response()->json([
-            'discussion' => Message::where('discussion_id', $id)->get(),
+            'discussion' => $arr_message,
         ]);
     }
 
